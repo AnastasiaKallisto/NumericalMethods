@@ -49,60 +49,91 @@ public class TableFunctions {
     }
 
     public TableFunctions(double[] f, double[][] matrix, double[] approximateX, double[] exactX) {
-        matrixNorm = calculateCubicNormOfMatrix(matrix); // кубическая норма матрицы
-        inverseMatrixNorm = calculateCubicNormOfMatrix(calculateInverseMatrix(matrix)); // кубическая норма обратной матрицы
-        V_NevyazkaOfGeneration = calculateV_nevyazka_of_generation(matrix); // невязка генерации (норма матрицы * норма обратной матрицы)
+        matrixNorm = calculateCubicNormOfMatrix(matrix); // куб норма матрицы
+        inverseMatrixNorm = calculateCubicNormOfMatrix(MatrixFunctions.calculateInverseMatrix(matrix)); // куб норма обратной матрицы
+        V_NevyazkaOfGeneration = calculateV_nevyazka_of_generation(matrixNorm, inverseMatrixNorm); // невязка генерации
         r_nevyazka = calculateR_Nevyazka(matrix,approximateX,f); // невязка
         normOfNevyazka_r = calculateCubicNormOfVector(r_nevyazka); // норма невязки
-        p_OtnosNormOfNevyazka = calculateP_otnositelnaya_norm_nevyazki(r_nevyazka, f); // относительная норма невязки
+        p_OtnosNormOfNevyazka = calculateP_otnositelnaya_norm_nevyazki(normOfNevyazka_r, f); // относительная норма невязки
         z_Error = calculateErrorZ(approximateX, exactX); // ошибка
         normOfError_z = calculateCubicNormOfVector(z_Error); // норма ошибки
-        J_OtnosNormOfError = calculateJ_otnositelnaya_norm_of_error(z_Error,exactX); // относительная норма ошибки
+        J_OtnosNormOfError = calculateJ_otnositelnaya_norm_of_error(normOfError_z,exactX); // относительная норма ошибки
     }
 
     // кубическая норма матрицы - максимум из сумм модулей элементов каждой строки
     // || A ||, || A ^ -1 || будет считаться тоже здесь
+    // ГОТОВО
     private double calculateCubicNormOfMatrix(double[][] matrix) {
-        return 0;
+        double max = 0;
+        double stringMax;
+        for (int i = 0; i < matrix.length; i++) {
+            stringMax = 0;
+            for (int j = 0; j < matrix.length; j++) {
+                stringMax+=Math.abs(matrix[i][j]);
+            }
+            if (max < stringMax){
+                max = stringMax;
+            }
+        }
+        return max;
     }
 
-    // поиск обратной матрицы A^-1
-    private double[][] calculateInverseMatrix(double[][] matrix) {
-        return new double[1][1];
-    }
 
     // невязка генерации V(A) (греческая ню с индексом бесконечность от матрицы А)
     // норма матрицы умножить на норму обратной матрицы
-    private double calculateV_nevyazka_of_generation(double[][] matrix) {
-        return 0;
+    // ГОТОВО
+    private double calculateV_nevyazka_of_generation(double matrixNorm, double inverseMatrixNorm) {
+        return matrixNorm*inverseMatrixNorm;
     }
 
-    // z - ошибка = приближ решение (x с волной) минус точное решение (x со звездочкой) (вектор минус вектор = вектор)
-    // возвращает массив формата double[n]
+    // z - ошибка = приближ решение (x с волной) минус точное решение (x со звездочкой)
+    // ГОТОВО
     private double[] calculateErrorZ(double[] approximateX, double[] exactX) {
-        return new double[5];
+        int n = approximateX.length;
+        double[] z = new double[n];
+        for (int i = 0; i < n; i++) {
+            z[i] = approximateX[i]-exactX[i];
+        }
+        return z;
     }
 
     // норма вектора - максимум из модулей элементов вектора
     // здесь будет считаться норма невязки || r ||, норма ошибки || z ||, и промежуточные вычисления
     // для поиска относительной нормы ошибки J(красивое) и относительной нормы невязки p(красивое)
+    // ГОТОВО
     private double calculateCubicNormOfVector(double[] v) {
-        return 0;
+        double max = 0;
+        double curElem;
+        for (int i = 0; i < v.length; i++) {
+            curElem = Math.abs(v[i]);
+            if (max < curElem){
+                max = curElem;
+            }
+        }
+        return max;
     }
 
     // невязка (греческая тау либо английская r) r = A*x (x с волной) - f
+    // ГОТОВО
     private double[] calculateR_Nevyazka(double[][] matrix, double[] approximateX, double[] f) {
-        return new double[5];
+        int n = approximateX.length;
+        double[] answer = MatrixFunctions.multiplyMatrixOnVector(matrix, approximateX);
+        for (int i = 0; i < n; i++) {
+            answer[i] = answer[i]-f[i];
+        }
+        return answer;
     }
 
     // относительная норма невязки p = норма невязки разделить на норму вектора f (значения за знаком равенства, или за чертой)
-    private double calculateP_otnositelnaya_norm_nevyazki(double[] r_nevyazka, double[] f) {
-        return 0;
+    // ГОТОВО
+    private double calculateP_otnositelnaya_norm_nevyazki(double normOfNevyazka_r, double[] f) {
+        return normOfNevyazka_r/calculateCubicNormOfVector(f);
     }
 
     // относительная норма ошибки J (греческая йота) = норма ошибки поделить на норму точного решения
-    private double calculateJ_otnositelnaya_norm_of_error(double[] z_error, double[] exactX) {
-        return 0;
+    // ГОТОВО
+    private double calculateJ_otnositelnaya_norm_of_error(double normOfError_z, double[] exactX) {
+        return normOfError_z/calculateCubicNormOfVector(exactX);
     }
 
 
