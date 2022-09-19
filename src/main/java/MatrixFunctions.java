@@ -2,13 +2,15 @@ public class MatrixFunctions {
     // поиск обратной матрицы A^-1
     public static double[][] calculateInverseMatrix(double[][] matrix) {
         int n = matrix.length;
-        double[][] a = getTransposedMatrix(matrix);
-        double coef = 1.0 / Math.abs(calculateDeterminant(matrix));
+        double[][] a = new double[n][n];
+        double coef = 1.0 / calculateDeterminant(matrix);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                a[i][j] = a[i][j] * coef;
+                a[i][j] = calculateDeterminant(getMinorOfMatrix(i, j, matrix)) * coef;
+                a[i][j] *= Math.pow(-1, i + j);
             }
         }
+        a = getTransposedMatrix(a);
         return a;
     }
 
@@ -17,10 +19,9 @@ public class MatrixFunctions {
         int n = matrix.length;
         double[][] a = new double[n][n];
         for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                double temp = a[i][j];
-                a[i][j] = a[j][i];
-                a[j][i] = temp;
+            for (int j = 0; j < n; j++) {
+                a[i][j] = matrix[j][i];
+                a[j][i] = matrix[i][j];
             }
         }
         return a;
@@ -74,14 +75,19 @@ public class MatrixFunctions {
             for (int j = 0; j < n; j++) {
                 for (int k = 0; k < n; k++) {
                     answer[i][j] += matrix1[i][k] * matrix2[k][j];
+
+                }
+                if (Double.compare(answer[i][j], 1E-6) < 0) {
+                    answer[i][j] = 0;
                 }
             }
+
         }
         return answer;
     }
 
     // копирование матрицы
-    public static double[][] getCopyOfMatrix(double[][] matrix){
+    public static double[][] getCopyOfMatrix(double[][] matrix) {
         int n = matrix.length;
         double[][] answer = new double[n][n];
         for (int i = 0; i < n; i++) {
@@ -90,6 +96,21 @@ public class MatrixFunctions {
             }
         }
         return answer;
+    }
+
+    public static boolean equals(double[][] matrix1, double[][] matrix2) {
+        if (matrix1.length != matrix2.length) {
+            return false;
+        }
+
+        for (int i = 0; i < matrix1.length; i++) {
+            for (int j = 0; j < matrix1.length; j++) {
+                if (Double.compare(matrix1[i][j], matrix2[i][j]) != 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 }
