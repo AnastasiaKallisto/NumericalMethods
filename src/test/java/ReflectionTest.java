@@ -3,6 +3,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ReflectionTest {
+    private final double EPS = 1E-6;
+
     @Test
     public void simpleTest() {
         double[][] matrix = {{2, 5, 7}, {6, 3, 4}, {5, -2, -3}};
@@ -11,7 +13,7 @@ public class ReflectionTest {
         MatrixInversionReflectionMethod method = new MatrixInversionReflectionMethod(matrix);
         double[][] res = method.getA_Inversion();
 
-        assertTrue(MatrixFunctions.equals(res, exact));
+        assertTrue(MatrixFunctions.equals(exact,res));
     }
 
     @Test
@@ -34,7 +36,7 @@ public class ReflectionTest {
 
         MatrixInversionReflectionMethod method = new MatrixInversionReflectionMethod(matrix);
         double[][] res = method.getA_Inversion();
-        int a=123;
+
         assertTrue(MatrixFunctions.equals(res, inversionMatrix));
     }
 }

@@ -77,9 +77,9 @@ public class MatrixFunctions {
                     answer[i][j] += matrix1[i][k] * matrix2[k][j];
 
                 }
-                if (Double.compare(answer[i][j], 1E-6) < 0) {
+                /*if (Double.compare(answer[i][j], 1E-8) < 0) {
                     answer[i][j] = 0;
-                }
+                }*/
             }
 
         }
@@ -105,7 +105,7 @@ public class MatrixFunctions {
 
         for (int i = 0; i < matrix1.length; i++) {
             for (int j = 0; j < matrix1.length; j++) {
-                if (Double.compare(matrix1[i][j], matrix2[i][j]) != 0) {
+                if (Math.abs(matrix1[i][j] - matrix2[i][j]) > 1E-6) {
                     return false;
                 }
             }
