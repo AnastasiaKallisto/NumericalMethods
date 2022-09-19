@@ -63,7 +63,7 @@ public class TableFunctions {
     // кубическая норма матрицы - максимум из сумм модулей элементов каждой строки
     // || A ||, || A ^ -1 || будет считаться тоже здесь
     // ГОТОВО
-    private double calculateCubicNormOfMatrix(double[][] matrix) {
+    public static double calculateCubicNormOfMatrix(double[][] matrix) {
         double max = 0;
         double stringMax;
         for (int i = 0; i < matrix.length; i++) {
@@ -101,7 +101,7 @@ public class TableFunctions {
     // здесь будет считаться норма невязки || r ||, норма ошибки || z ||, и промежуточные вычисления
     // для поиска относительной нормы ошибки J(красивое) и относительной нормы невязки p(красивое)
     // ГОТОВО
-    private double calculateCubicNormOfVector(double[] v) {
+    public static double calculateCubicNormOfVector(double[] v) {
         double max = 0;
         double curElem;
         for (int i = 0; i < v.length; i++) {
