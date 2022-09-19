@@ -1,9 +1,9 @@
 public class Gauss {
-    private double[][] matrix;
-    private double[][] matrix_copy;
-    private double[] solutionsVector;
-    private double[] result;
-    private boolean[] nulableLines;
+    private final double[][] matrix;
+    private final double[][] matrix_copy;
+    private final double[] solutionsVector;
+    private final double[] result;
+    private final boolean[] nulableLines;
     private int line;
     private int cols;
     private final double EPS = 1E-4;
@@ -35,13 +35,15 @@ public class Gauss {
         for (int i = 0; i < nulableLines.length; i++) {
             nulableLines[i] = true;
         }
+
+        solveEquation();
     }
 
     public double[] getResult() {
         return result;
     }
 
-    public void accept() {
+    private void solveEquation() {
         for (int k = 0; k < matrix.length; k++) {
             findMaxElem(matrix_copy);
 
