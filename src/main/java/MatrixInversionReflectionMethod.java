@@ -131,8 +131,7 @@ public class MatrixInversionReflectionMethod {
 
     // получение обратной матрицы L^(-1) к верхнетреугольной матрице L
     public double[][] calculateLInversion(double[][] L) {
-        // получение описано тут https://studfile.net/preview/5793013/
-        return new double[L.length][L.length];
+        return MatrixFunctions.calculateInverseMatrix(L);
     }
 
 
