@@ -439,26 +439,6 @@ public class Gen {
 
 
         mygen(a, a_inv, n, ALPHA, BETA, 1, 2, 0, 1); // симметричная
-//	mygen ( a, a_inv, n, alpha, beta, 1, 2, 1, 1 ); //проостой структуры
-//	mygen ( a, a_inv, n, alpha, beta, 0, 0, 2, 1 ); //жорданова клетка
-
-/*	cout << "a:" << endl;
-	for( i = 0; i < n; i++ )
-	{
-		for( j = 0; j < n; j++ ) cout << " " << a[i][j];
-		cout << endl;
-	}
-	cout << "a_inv:" << endl;
-	for( i = 0; i < n; i++ )
-	{
-		for( j = 0; j < n; j++ ) cout << " " << a_inv[i][j];
-		cout << endl;
-	}
-
-*/
-        char ch;
-//	return 0;
     }
-
 
 }
