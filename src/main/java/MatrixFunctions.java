@@ -17,10 +17,9 @@ public class MatrixFunctions {
         int n = matrix.length;
         double[][] a = new double[n][n];
         for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                double temp = a[i][j];
-                a[i][j] = a[j][i];
-                a[j][i] = temp;
+            for (int j = 0; j < n; j++) {
+                a[i][j] = matrix[j][i];
+                a[j][i] = matrix[i][j];
             }
         }
         return a;

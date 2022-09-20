@@ -3,45 +3,31 @@ public class Gauss {
     private double[][] matrix_copy;
     private double[] solutionsVector;
     private double[] result;
-    private boolean[] nulableLines;
+    private boolean[] notNullableLines;
     private int line;
-    private int cols;
+    private int column;
     private final double EPS = 1E-4;
     private double maximum = Double.MIN_VALUE;
 
 
     public Gauss(double[][] matrix, double[] solutionsVector) {
-        this.matrix = new double[matrix.length][matrix.length];
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix.length; j++) {
-                this.matrix[i][j] = matrix[i][j];
-            }
-        }
-
-        this.matrix_copy = new double[matrix.length][matrix.length];
-        for (int i = 0; i < matrix_copy.length; i++) {
-            for (int j = 0; j < matrix_copy.length; j++) {
-                matrix_copy[i][j] = matrix[i][j];
-            }
-        }
-
-        this.solutionsVector = new double[solutionsVector.length];
-        for (int i = 0; i < solutionsVector.length; i++) {
-            this.solutionsVector[i] = solutionsVector[i];
-        }
+        this.matrix = MatrixFunctions.getCopyOfMatrix(matrix);
+        this.matrix_copy = MatrixFunctions.getCopyOfMatrix(matrix);
+        this.solutionsVector = VectorFunctions.getCopyOfVector(solutionsVector);
         this.result = new double[matrix.length];
-
-        this.nulableLines = new boolean[solutionsVector.length];
-        for (int i = 0; i < nulableLines.length; i++) {
-            nulableLines[i] = true;
+        // зануляются по мере работы с копией матрицы
+        this.notNullableLines = new boolean[solutionsVector.length];
+        for (int i = 0; i < notNullableLines.length; i++) {
+            notNullableLines[i] = true;
         }
+        solveEquation();
     }
 
     public double[] getResult() {
         return result;
     }
 
-    public void accept() {
+    private void solveEquation() {
         for (int k = 0; k < matrix.length; k++) {
             findMaxElem(matrix_copy);
 
@@ -50,10 +36,10 @@ public class Gauss {
                 if (i == line) {
                     continue;
                 }
-                koefic = matrix[i][cols] / maximum;
+                koefic = matrix[i][column] / maximum;
                 for (int j = 0; j < matrix[i].length; j++) {
                     matrix[i][j] = matrix[i][j] - koefic * matrix[line][j];
-                    if (nulableLines[i]) {
+                    if (notNullableLines[i]) {
                         matrix_copy[i][j] = matrix_copy[i][j] - koefic * matrix_copy[line][j];
                     }
                     if (Double.compare(Math.abs(matrix[i][j]), EPS) < 0) {
@@ -66,7 +52,7 @@ public class Gauss {
             for (int i = 0; i < matrix_copy.length; i++) {
                 matrix_copy[line][i] = 0;
             }
-            nulableLines[line] = false;
+            notNullableLines[line] = false;
         }
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix.length; j++) {
@@ -77,7 +63,8 @@ public class Gauss {
         }
     }
 
-
+    // line - строка, которую мы трогать не будем в рабочей матрице
+    // column - столбец, который мы будем занулять
     private void findMaxElem(double[][] matrix) {
         maximum = Double.MIN_VALUE;
         for (int i = 0; i < matrix.length; i++) {
@@ -85,46 +72,9 @@ public class Gauss {
                 if (Double.compare(Math.abs(maximum), Math.abs(matrix[i][j])) < 0) {
                     maximum = matrix[i][j];
                     line = i;
-                    cols = j;
+                    column = j;
                 }
             }
-        }
-    }
-
-
-    private void migrateMainElementToStartPosition(double[][] matrix) {
-        migrateLinesToStart(matrix);
-        migrateColsToStart(matrix);
-    }
-
-
-    private void migrateLinesToStart(double[][] matrix) {
-        if (line == 0) {
-            return;
-        }
-        double buffer;
-        for (int i = line; i > 0; i--) {
-            for (int j = 0; j < matrix.length - 1; j++) {
-                buffer = matrix[i][j];
-                matrix[i][j] = matrix[i - 1][j];
-                matrix[i - 1][j] = buffer;
-            }
-        }
-    }
-
-    private void migrateColsToStart(double[][] matrix) {
-        if (cols == 0) {
-            return;
-        }
-
-        double buffer;
-        for (int i = cols; i > 0; i--) {
-            for (int j = 0; j < matrix.length - 1; j++) {
-                buffer = matrix[j][i];
-                matrix[j][i] = matrix[j][i - 1];
-                matrix[j][i - 1] = buffer;
-            }
-
         }
     }
 }

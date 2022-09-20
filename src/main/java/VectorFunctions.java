@@ -16,4 +16,13 @@ public class VectorFunctions {
         }
         return answer;
     }
+
+    // копирование вектора
+    public static double[] getCopyOfVector(double[] v){
+        double[] vector = new double[v.length];
+        for (int i = 0; i < v.length; i++) {
+            vector[i] = v[i];
+        }
+        return v;
+    }
 }
