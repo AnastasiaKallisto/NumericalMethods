@@ -2,104 +2,81 @@ public class MethodMinNevyazok {
     /**
      * A- матрица, b- вектор правых частей, X-вектор результат, eps- точность
      **/
-    public static int MinNev(double[][] A, double[] b, double[] X, double eps) {
-        int N = A.length;
-        int count = 0;//  количество итераций
-        double[] Ax;
-        double[] Ar;
-        double[] r = new double[N];
-        double[] TempX = new double[N];
-        double maxi = 0.0, Tau = 0.0, TempTau = 0.0;
+    double[] x;
+    int count;
 
-        for (int i = 0; i < N; i++) {
-            TempX[i] = 0;//первое приближение задаём нулевым
-        }
-        do {
-            Ax = MatrixFunctions.multiplyMatrixOnVector(A, TempX);
-            for (int i = 0; i < N; i++) {
-                r[i] = Ax[i] - b[i];// невязка
-            }
-            Ar = MatrixFunctions.multiplyMatrixOnVector(A, r);
-            Tau = 0.0;
-            TempTau = 0.0;
-            for (int i = 0; i < N; i++) {
-                Tau += Ar[i] * r[i];
-                TempTau += Ar[i] * Ar[i];
-            }
-            Tau = Tau / TempTau;
-            for (int i = 0; i < N; i++) {
-                X[i] = TempX[i] - Tau * r[i];
-            }
+    public static void main(String[] args) {
+        double[][] A = {{1000, 5, 3, 1}, {4, 10, 5, 4}, {2, 52, 4, 1}, {1, 4, 5, 0}};
+        double[] x = {9, 18, 10, -16};
+        double[] b = MatrixFunctions.multiplyMatrixOnVector(A, x);
+        double[] answer = new double[4];
+        MethodMinNevyazok m = new MethodMinNevyazok(A, b, answer, 1E-3);
+        System.out.println(answer[0] + " " + answer[1] + " " + answer[2] + " " + answer[3]);
+        System.out.println(x[0] + " " + x[1] + " " + x[2] + " " + x[3]);
+    }
 
-            maxi = Math.abs(X[0] - TempX[0]);
-            for (int i = 0; i < N; i++) {
-                if (Math.abs(X[i] - TempX[i]) > maxi)
-                    maxi = Math.abs(X[i] - TempX[i]);
-                TempX[i] = X[i];
-            }
-            count++;
-        } while (maxi >= eps);
+    public MethodMinNevyazok(double[][] A, double[] f, double[] x_j, double eps) {
+        count = getExactX(A, f, x_j, eps);
+    }
+
+    public int getCount(){
         return count;
     }
 
-    public static void main(String[] args) {
-        int N = 4;
-        double[][] a = {{1, -1, 3, 1}, {4, -1, 5, 4}, {2, -2, 4, 1}, {1, -4, 5, -1}};
-        double[] b = {5, 4, 6, 3};
-        double[] answer = {9, 18, 10, -16};
-
-        double[][] a_t = MatrixFunctions.getTransposedMatrix(a);
-        double[][] a_sim = MatrixFunctions.multiplyMatrixOnMatrix(a, a_t);
-        double[] X = new double[N];
-        double eps = 0.0000000001;
-        double[] b_t = MatrixFunctions.multiplyMatrixOnVector(a_t, b);
-        int k = MinNev(a_sim, b_t, X, eps);
-
-        System.out.println("a:");
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                System.out.print(" " + a[i][j]);
-            }
-            System.out.println();
-        }
-        System.out.println("b: ");
-        for (int i = 0; i < N; i++) {
-            System.out.print(b[i] + " ");
-        }
-        System.out.println();
-
-        System.out.println("a_sim:");
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                System.out.print(" " + a_sim[i][j]);
-            }
-            System.out.println();
-        }
-        System.out.println("b_t: ");
-        for (int i = 0; i < N; i++) {
-            System.out.print(b_t[i] + " ");
-        }
-        System.out.println();
-        System.out.println("Kol-vo iter: " + k);
-        System.out.println("X:");
-        for (int i = 0; i < N; i++) {
-            System.out.print(X[i] + " ");
-        }
+    public double[] getX(){
+        return x;
     }
 
-    // невязка r_j = A * approx_x_j - f
-
-    // ошибка z_j = approx_x_j - exact_x
+    public int getExactX(double[][] A, double[] f, double[] x_j, double eps) {
+        /*double determinant = MatrixFunctions.calculateDeterminant(A);
+        if (Double.compare(determinant ,0) < 1E-15)
+            throw new IllegalArgumentException("Determinant is 0, there is no decision");
+        if (determinant < 0)
+            throw new IllegalArgumentException("Determinant < 0, method can't work");*/
+        int n = f.length;
+        int count = 0;
+        double feps = eps * TableFunctions.calculateCubicNormOfVector(f);
+        double[][] E = new double[n][n];
+        for (int i = 0; i < n; i++) {
+            E[i][i] = 1;
+        }
+        double[] r_j, x_j_plus_1;
+        double t_j;
+        while (true) {
+            count++;
+            r_j = get_r_j(A, x_j, f);
+            t_j = get_t_j(A, r_j);
+            x_j_plus_1 = get_x_j_plus_1(t_j, x_j, f, A, E);
+            if (TableFunctions.calculateCubicNormOfVector(r_j) < feps) {
+                break;
+            }
+            x_j = x_j_plus_1;
+        }
+        x = x_j;
+        System.out.println("Kol-vo iter = " + count);
+        return count;
+    }
 
     // параметр t_j  = скал произв (A * r_j, r_j) / скал произв (A * r_j, A * r_j)
+    public static double get_t_j(double[][] A, double[] r_j) {
+        double[] Ar_j = MatrixFunctions.multiplyMatrixOnVector(A, r_j);
+        double numerator = VectorFunctions.getScalarMultV1onV2(Ar_j, r_j);
+        double denumerator = VectorFunctions.getScalarMultV1onV2(Ar_j, Ar_j);
+        double answer = numerator / denumerator;
+        return answer;
+    }
 
-    // H_j = t_j * E
+    // невязка r_j = A * x_j - f
+    public static double[] get_r_j(double[][] A, double[] X_j, double[] f) {
+        return TableFunctions.calculateR_Nevyazka(A, X_j, f);
+    }
 
-    // T_j = E - t_j * A
-
-    // approx_x_j+1 = approx_x_j - H_j * r_j
-
-    // либо
-
-    // approx_x_j+1 = T_j * approx_x_j - H_j * f ???
+    // x_j+1 = (E - t_j * A) * x_j + t_j * f
+    public static double[] get_x_j_plus_1(double t_j, double[] x_j, double[] f, double[][] A, double[][] E) {
+        double[][] coef1 = MatrixFunctions.matrixMinusMatrix(E, MatrixFunctions.multiplyMatrixOnNumber(A, t_j));
+        double[] x_j_plus_1 = VectorFunctions.V1plusV2(
+                MatrixFunctions.multiplyMatrixOnVector(coef1, x_j),
+                VectorFunctions.multiplyVectorOnNumber(f, t_j));
+        return x_j_plus_1;
+    }
 }

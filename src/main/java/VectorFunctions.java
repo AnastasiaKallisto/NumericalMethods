@@ -17,13 +17,21 @@ public class VectorFunctions {
         return answer;
     }
 
+    public static double[] V1plusV2(double[] v1, double[] v2) {
+        double[] answer = new double[v1.length];
+        for (int i = 0; i < v1.length; i++) {
+            answer[i] = v1[i] + v2[i];
+        }
+        return answer;
+    }
+
     // копирование вектора
     public static double[] getCopyOfVector(double[] v) {
         double[] vector = new double[v.length];
         for (int i = 0; i < v.length; i++) {
             vector[i] = v[i];
         }
-        return v;
+        return vector;
     }
     // тензорное произведение векторов, v2 как будто строка, v1 как столбец
     public double[][] calculateTensorMultiplicationOfVectors(double[] v1, double[] v2) {
@@ -45,5 +53,23 @@ public class VectorFunctions {
             result += (vector[i] * vector[i]);
         }
         return Math.sqrt(result);
+    }
+
+    public static double getScalarMultV1onV2(double[] v1, double[] v2){
+        int n = v1.length;
+        double answer = 0;
+        for (int i = 0; i < n; i++) {
+            answer+= v1[i]*v2[i];
+        }
+        return answer;
+    }
+
+    public static boolean almostEquals(double[] v1, double[] v2, double EPS){
+        for (int i = 0; i < v1.length; i++) {
+            if (Math.abs(v1[i] - v2[i]) > EPS){
+                return false;
+            }
+        }
+        return true;
     }
 }

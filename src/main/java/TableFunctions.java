@@ -48,9 +48,9 @@ public class TableFunctions {
         return r_nevyazka;
     }
 
-    public TableFunctions(double[] f, double[][] matrix, double[] approximateX, double[] exactX) {
+    public TableFunctions(double[] f, double[][] matrix, double[][] matrixInv, double[] approximateX, double[] exactX) {
         matrixNorm = calculateCubicNormOfMatrix(matrix); // куб норма матрицы
-        inverseMatrixNorm = calculateCubicNormOfMatrix(MatrixFunctions.calculateInverseMatrix(matrix)); // куб норма обратной матрицы
+        inverseMatrixNorm = calculateCubicNormOfMatrix(matrixInv); // куб норма обратной матрицы
         V_NevyazkaOfGeneration = calculateV_nevyazka_of_generation(matrixNorm, inverseMatrixNorm); // невязка генерации
         r_nevyazka = calculateR_Nevyazka(matrix, approximateX, f); // невязка
         normOfNevyazka_r = calculateCubicNormOfVector(r_nevyazka); // норма невязки
@@ -81,12 +81,12 @@ public class TableFunctions {
 
     // невязка генерации V(A) (греческая ню с индексом бесконечность от матрицы А)
     // норма матрицы умножить на норму обратной матрицы
-    private double calculateV_nevyazka_of_generation(double matrixNorm, double inverseMatrixNorm) {
+    public static double calculateV_nevyazka_of_generation(double matrixNorm, double inverseMatrixNorm) {
         return matrixNorm * inverseMatrixNorm;
     }
 
     // z - ошибка = приближ решение (x с волной) минус точное решение (x со звездочкой)
-    private double[] calculateErrorZ(double[] approximateX, double[] exactX) {
+    public static double[] calculateErrorZ(double[] approximateX, double[] exactX) {
         int n = approximateX.length;
         double[] z = new double[n];
         for (int i = 0; i < n; i++) {
@@ -111,7 +111,7 @@ public class TableFunctions {
     }
 
     // невязка (греческая тау либо английская r) r = A*x (x с волной) - f
-    private double[] calculateR_Nevyazka(double[][] matrix, double[] approximateX, double[] f) {
+    public static double[] calculateR_Nevyazka(double[][] matrix, double[] approximateX, double[] f) {
         int n = approximateX.length;
         double[] answer = MatrixFunctions.multiplyMatrixOnVector(matrix, approximateX);
         for (int i = 0; i < n; i++) {
@@ -121,14 +121,12 @@ public class TableFunctions {
     }
 
     // относительная норма невязки p = норма невязки разделить на норму вектора f (значения за знаком равенства, или за чертой)
-    private double calculateP_otnositelnaya_norm_nevyazki(double normOfNevyazka_r, double[] f) {
+    public static double calculateP_otnositelnaya_norm_nevyazki(double normOfNevyazka_r, double[] f) {
         return normOfNevyazka_r / calculateCubicNormOfVector(f);
     }
 
     // относительная норма ошибки J (греческая йота) = норма ошибки поделить на норму точного решения
-    private double calculateJ_otnositelnaya_norm_of_error(double normOfError_z, double[] exactX) {
+    public static double calculateJ_otnositelnaya_norm_of_error(double normOfError_z, double[] exactX) {
         return normOfError_z / calculateCubicNormOfVector(exactX);
     }
-
-
 }

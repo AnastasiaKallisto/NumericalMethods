@@ -14,6 +14,39 @@ public class MatrixFunctions {
         return a;
     }
 
+    public static double[][] multiplyMatrixOnNumber(double[][] matrix, double number) {
+        int n = matrix.length;
+        double[][] answer = new double[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                answer[i][j] = matrix[i][j] * number;
+            }
+        }
+        return answer;
+    }
+
+    public static double[][] matrixMinusMatrix(double[][] matrix1, double[][] matrix2){
+        int n = matrix1.length;
+        double[][] answer = new double[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                answer[i][j] = matrix1[i][j] - matrix2[i][j];
+            }
+        }
+        return answer;
+    }
+
+    public static double[][] matrixPlusMatrix(double[][] matrix1, double[][] matrix2){
+        int n = matrix1.length;
+        double[][] answer = new double[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                answer[i][j] = matrix1[i][j] + matrix2[i][j];
+            }
+        }
+        return answer;
+    }
+
     // поиск транспонированной матрицы
     public static double[][] getTransposedMatrix(double[][] matrix) {
         int n = matrix.length;
@@ -111,6 +144,28 @@ public class MatrixFunctions {
             }
         }
         return true;
+    }
+
+    // с помощью элемента [0][0] зануляем первый столбец (кроме [0][0]) и меняем заодно все встрочки и вектор B
+    public static void makeFirstColumnNull(double[][] A, double[] b){
+        int n = A.length;
+        double coef;
+        double a00 = A[0][0];
+        // если есть минор и есть что занулять вообще
+        if (n != 1) {
+            for (int i = 1; i < n; i++) {
+                coef = A[i][0]/a00;
+                strMinusStrWithCoef(A, coef, i, 0, n);
+                b[i]-=b[0]*coef;
+            }
+        }
+    }
+
+    //вычесть из i строчки j-ю строчку с коэффициентом k
+    public static void strMinusStrWithCoef(double[][] A, double k, int i, int j, int n){
+        for (int l = 0; l < n; l++) {
+            A[i][l] -= A[j][l]*k;
+        }
     }
 
 }

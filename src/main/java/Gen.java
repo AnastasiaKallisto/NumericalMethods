@@ -2,23 +2,18 @@ import static java.lang.Math.acos;
 import static java.lang.Math.sin;
 
 public class Gen {
-    private static final int N = 100;
-    private static final double ALPHA = 1E-3;
-    private static final double BETA = 1.0;
-
-
     public static void mygen(double[][] a, double[][] a_inv, int n, double alpha, double beta, int sign_law, int lambda_law, int variant, int schema) {
         int i, j, k;
-
+/*
         System.out.println("   M A T R I X  G E N.  ");
         System.out.println("              N = ");
         System.out.println(" | lambda_min | = ");
         System.out.println(" | lambda_max | = ");
-
+*/
         double[] lambda = new double[n];
 
         // распределение знаков
-        System.out.println(" sign_law = ");
+        //System.out.println(" sign_law = ");
 
         double[] sign = new double[n];
         for (i = 0; i < n; i++) {
@@ -40,13 +35,13 @@ public class Gen {
 
         }
 
-        for (int l = 0; l < n; l++) {
+        /*for (int l = 0; l < n; l++) {
             System.out.print(sign[l] + " ");
         }
-        System.out.println();
+        System.out.println();*/
 
         //распределение собственнных чисел
-        System.out.println(" lambda_law = " + lambda_law);
+        //System.out.println(" lambda_law = " + lambda_law);
 
         double[] kappa = new double[n];
         for (i = 0; i < n; i++) {
@@ -54,7 +49,7 @@ public class Gen {
         }
         switch (lambda_law) {
             case 1: {
-                System.out.println(" kappa = sqrt( ) ");
+                //System.out.println(" kappa = sqrt( ) ");
                 for (i = 0; i < n; i++) {
                     kappa[i] = Math.sqrt(kappa[i]);
                 }
@@ -62,7 +57,7 @@ public class Gen {
             }
 
             case 2: {
-                System.out.println(" kappa = sin( ) ");
+                //System.out.println(" kappa = sin( ) ");
                 double pi_half = acos(-1.) * 0.5;
                 for (i = 0; i < n; i++) kappa[i] = sin(pi_half * kappa[i]);
                 break;
@@ -95,12 +90,12 @@ public class Gen {
         double[] aa = new double[3];
 
 
-        System.out.println(" variant = " + variant);
+        //System.out.println(" variant = " + variant);
 
         switch (variant) {
             case 0: //симметричная матрица
-                System.out.println(" simmetric matrix:");
-                System.out.println(" schema = " + schema);
+                //System.out.println(" simmetric matrix:");
+                //System.out.println(" schema = " + schema);
                 switch (schema) {
                     case 1:
                         Q_matrix(Q, n, schema);
@@ -138,8 +133,8 @@ public class Gen {
                 break;
 
             case 1: //матрица простой структуры
-                System.out.println(" simple structure matrix:");
-                System.out.println(" schema = " + schema);
+                //System.out.println(" simple structure matrix:");
+                //System.out.println(" schema = " + schema);
                 switch (schema) {
                     case 1:
                         //TJ
@@ -232,8 +227,8 @@ public class Gen {
                 break;
 
             case 2: //одна жорданова клетка 2x2 при минимальном с.з.
-                System.out.println(" J_2 type matrix:");
-                System.out.println(" schema = " + schema);
+                //System.out.println(" J_2 type matrix:");
+                //System.out.println(" schema = " + schema);
 
                 switch (schema) {
                     case 1:
@@ -350,13 +345,13 @@ public class Gen {
         double norm, norm_inv;
 
         norm = matr_inf_norm(a, n);
-        System.out.println(" ||  A  || = " + norm);
+        //System.out.println(" ||  A  || = " + norm);
 
         norm_inv = matr_inf_norm(a_inv, n);
-        System.out.println(" ||A_inv|| = " + norm_inv);
+        //System.out.println(" ||A_inv|| = " + norm_inv);
 
         double obusl = norm * norm_inv;
-        System.out.println(" obusl = " + obusl);
+        //System.out.println(" obusl = " + obusl);
 
         //невязка генерации
         double[][] r = new double[n][n];
@@ -374,7 +369,7 @@ public class Gen {
 	}
 */
         norm = matr_inf_norm(r, n);
-        System.out.println(" ||R_gen|| = " + norm);
+        //System.out.println(" ||R_gen|| = " + norm);
 
 
     }//mygen
@@ -422,23 +417,8 @@ public class Gen {
         return norm;
     }
 
-    public static void _tmain(int argc) {
-        int i, j;
+    public static void main(String[] args) {
 
-        int n = N;
-        double[][] a = new double[N][N];
-        for (i = 0; i < n; i++) {
-            a[i] = new double[N];
-        }
-
-
-        double[][] a_inv = new double[N][N];
-        for (i = 0; i < n; i++) {
-            a_inv[i] = new double[n];
-        }
-
-
-        mygen(a, a_inv, n, ALPHA, BETA, 1, 2, 0, 1); // симметричная
     }
 
 }
